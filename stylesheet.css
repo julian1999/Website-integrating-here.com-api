@@ -91,3 +91,9 @@ ul{
 	.sidebar {padding-top: 15px;}
 	.sidebar a {font-size: 18px;}
 }
+
+.container{
+	width: 95%;
+	margin-right:2.5%;
+	margin-left:2.5%;
+}

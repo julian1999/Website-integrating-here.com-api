@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
 <link rel="stylesheet" href="stylesheet.css">
 <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet"> 
 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
@@ -19,6 +20,7 @@
   crossorigin="anonymous"></script>
 <script src="semantic/dist/semantic.min.js"></script>
 </head>
+</head>
 
 <body>
 
@@ -26,9 +28,8 @@
     <div class"buttonDiv">
 	    <ul>
   		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
-  		    <li><h1> <center>Places Near Me</center> </h1></li>
-                <label id="seach">Search: </label>
-                <input type="text" placeholder="i.e. food">
+  		    <li><h1><center>Local Traffic</center> </h1></li>
+            <p class="subtext">Check up-to-date local traffic in your area</p>
 	    </ul>
     </div>
   
@@ -40,12 +41,12 @@
 		<a href="placesnearme.html">Places Near Me</a>
 		<a href="localtraffic.html">Local Traffic</a>
     </div>
-
+  
   <div id="map">
-  <script  type="text/javascript" charset="UTF-8">   
-
-//ADDED SEARCH Here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+  <script type="text/javascript" charset="UTF-8">
+/**
+ * Boilerplate map initialization code starts below:
+ */
 
 //Step 1: initialize communication with the platform
 var platform = new H.service.Platform({
@@ -59,76 +60,29 @@ var defaultLayers = platform.createDefaultLayers({
   ppi: pixelRatio === 1 ? undefined : 320
 });
 
-
 //Center the map around UC San Diego
 var map = new H.Map(document.getElementById('map'),
-  defaultLayers.satellite.traffic,{
+  defaultLayers.normal.traffic,{
   center: {lat:32.877832, lng:-117.240637},
   zoom: 15,
   pixelRatio: pixelRatio
 });
 
-//Make map interactive; MapEvents enables the event system
+//Step 3: make the map interactive
+// MapEvents enables the event system
 // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
 var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
 // Create the default UI components
 var ui = H.ui.UI.createDefault(map, defaultLayers);
-
 // Remove map settings as unnecessary
 ui.removeControl('mapsettings');
 
-//----Continuing onto the place markers
-    // Create a group object to hold map markers:
-    var group = new H.map.Group();
+// Now use the map as required...
+switchMapType(map, platform);
 
-    // Create the default UI components:
-    var ui = H.ui.UI.createDefault(map, platform.createDefaultLayers());
-
-    // Add the group object to the map:
-    
-    map.addObject(group);
-
-    // Obtain a Search object through which to submit search
-    // requests:
-    var search = new H.places.Search(platform.getPlacesService()),
-      searchResult, error;
-
-    // Define search parameters:
-    var params = {
-    // Plain text search for places with the word "hotel"
-    // associated with them:
-      'q': 'hotel',
-    //  Search UC San Diego area
-      'at': '32.877832,-117.240637'
-    };
-
-    // Define a callback function to handle data on success:
-    function onResult(data) {
-      addPlacesToMap(data.results);
-    }
-
-    // Define a callback function to handle errors:
-    function onError(data) {
-      error = data;
-    }
-
-    // This function adds markers to the map, indicating each of
-    // the located places:
-    function addPlacesToMap(result) {
-      group.addObjects(result.items.map(function (place) {
-      var marker = new H.map.Marker({lat: place.position[0],
-        lng: place.position[1]})
-      return marker;
-      }));
-    }
-
-    // Run a search request with parameters, headers (empty), and
-    // callback functions:
-    search.request(params, {}, onResult, onError);
-    
-  </script>
-  </div>
+    </script>
+    </div>
 </body>
 
 </html>

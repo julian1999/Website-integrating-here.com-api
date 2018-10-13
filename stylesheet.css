@@ -1,3 +1,7 @@
+body{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+}
 h1{
 	font-family: 'Shadows Into Light Two', cursive;
     font-size: 220%;
@@ -96,7 +100,7 @@ ul:hover{
 }
 
 .container{
-	width: 95%;
-	margin-right:2.5%;
-	margin-left:2.5%;
+    width: 100%;
+    padding: 0;
+
 }

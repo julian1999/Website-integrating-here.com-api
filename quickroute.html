@@ -47,7 +47,14 @@
  * @param  {H.Map} map      A HERE Map instance within the application
  * @param   {H.service.Platform} platform    A stub class to access HERE services
  */
+
+
+
 var coord = {
+  lat: Number,
+  lng: Number
+}
+var college = {
   lat: Number,
   lng: Number
 }
@@ -81,6 +88,7 @@ function setUpClickListener(map) {
     // the callback and an error callback function (called if a
     // communication error occurs):
     routingParameters.waypoint0 = "geo!" + coord.lat +"," + coord.lng;
+    routingParameters.waypoint1 = "geo!" + college.lat +"," + college.lng;
     router.calculateRoute(routingParameters, onResult,
     function(error) {
     alert(error.message);
@@ -88,7 +96,6 @@ function setUpClickListener(map) {
     showAddr();
   });
 }
-
 
 /**
  * Boilerplate map initialization code starts below:
@@ -244,6 +251,54 @@ function showAddr(){
     onSuccess,
     function(e) { alert(e); });
 }
+
+//prompt users for place
+  var invalid = true;
+  while(invalid){
+    var person = prompt("Please enter your place from the followings: Muir, Warren, ERC, Revelle, Marshall, Sixth", "Muir");
+    person = person.toLowerCase();
+    invalid = false;
+    if(person === 'muir'){
+      console.log("yey")
+      college = {
+        lat:32.8786,
+        lng:-117.2405
+      };
+    } else if(person === 'warren'){
+      console.log("yey")
+      college = {
+        lat:32.8812,
+        lng:-117.2341
+      };
+    } else if(person === 'erc'){
+      console.log("yey")
+      college = {
+        lat:32.8861,
+        lng:-117.2421
+      };
+    } else if(person === 'revelle'){
+      console.log("yey")
+      college = {
+        lat:32.8754,
+        lng:-117.2419
+      };
+    } else if(person === 'marshall'){
+      console.log("yey")
+      college = {
+        lat:32.8816,
+        lng:-117.2410
+      };
+    } else if(person === 'sixth'){
+      console.log("yey")
+      college = {
+        lat:32.8782,
+        lng:-117.2318
+      };
+    } else{
+      invalid = true;
+      alert("invalid input")
+    }
+  }
   </script>
 </body>
 </html>

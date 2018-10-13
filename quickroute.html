@@ -181,7 +181,8 @@ var onResult = function(result) {
   endPoint = route.waypoint[1].mappedPosition;
   // Create a polyline to display the route:
   routeLine = new H.map.Polyline(linestring, {
-    style: { strokeColor: 'red', lineWidth: 3 }
+    style: { lineWidth: 5 },
+    arrows: { fillColor: 'white', frequency: 2, width: 2.5, length: 3 }
   });
 
   // Create a marker for the start point:

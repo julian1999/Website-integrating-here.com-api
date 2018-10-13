@@ -2,3 +2,57 @@ h1{
 	text-align: center;
 	font-family: 'Shadows Into Light Two', cursive; 
 }
+.sidebar{
+	height: 100%; /*display full height vertically*/
+	width: 0; /*width will change with javascript*/
+	position: fixed; /*collapsed sidebar is not dynamic*/
+	top: 0;
+	left: 0;
+	z-index: 1; /*collapsed sidebar is one level higher than mainpage*/
+	background-color: rgba(0, 0, 0, 0.5); /*transparent black*/
+	overflow-x: hidden; /*disables horizontal scroll*/
+	padding-top: 50%;
+	transition: 0.5s; /*the seconds it takes to slide out*/	
+}
+/*all the a href tags */
+.sidebar a{
+	padding: 10px 10px 10px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color: #818181;
+	display: block;
+	transition: 0.3s;
+}
+/*change the color of the sidebar when hovering*/
+.sidebar a:hover{
+	color: rgba(255, 255, 255, 0.9);
+}
+/*close button at top right of collapsed sidebar*/
+.sidbar .closebutton{
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 36px;
+	margin-left: 50px;
+}
+/* The button used to open the sidebar */
+.openbutton {
+	font-size: 20px;
+	cursor: pointer;
+	background-color: white;
+	padding: 10px 15px;
+	border: none;
+}
+.openbutton:hover{
+	background-color: #444;
+}
+/*push content to right when opening side navigation*/
+#main{
+	transition: margin-left .5s;
+	padding: 20px;
+}
+/*on smaller screens where height is less than 450px; smaller effect*/
+@media screen and (max-height: 450px){
+	.sidebar {padding-top: 15px;}
+	.sidebar a {font-size: 18px;}
+}

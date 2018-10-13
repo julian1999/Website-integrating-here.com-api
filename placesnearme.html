@@ -27,8 +27,11 @@
 	    <ul>
   		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
   		    <li><h1> <center>Places Near Me</center> </h1></li>
-                <label id="seach">Search: </label>
-                <input type="text" placeholder="i.e. food">
+                <form id="form1">
+                    <label id="seach">Search: </label>
+                    <input type="text" placeholder="i.e. food">
+                    <button onclick="getText()">Submit</button>
+                </form>
 	    </ul>
     </div>
   
@@ -94,11 +97,18 @@ ui.removeControl('mapsettings');
     var search = new H.places.Search(platform.getPlacesService()),
       searchResult, error;
 
+    var text; 
+   
+    function getText(){
+        var form = document.getElementById("form1");
+        text = '\' ' + form.elements[0].value + '\' ';
+    }
+   
     // Define search parameters:
     var params = {
     // Plain text search for places with the word "hotel"
     // associated with them:
-      'q': 'hotel',
+      'q': text,
     //  Search UC San Diego area
       'at': '32.877832,-117.240637'
     };

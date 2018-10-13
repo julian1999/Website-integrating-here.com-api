@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="stylesheet.css">
+<link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet"> 
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1533195059" />
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="semantic/dist/semantic.min.js"></script>
+
+</head>
+<body class="ui container">
+  <h1> UCSD Quick Route </h1>
+  <div id="map" style="width: 100%; height: 1000px; background: grey" />
+  <script  type="text/javascript" charset="UTF-8">
+    
+
+/**
+ * Switches the map type to a topographical map
+ *
+ * @param  {H.Map} map      A HERE Map instance within the application
+ * @param   {H.service.Platform} platform    A stub class to access HERE services
+ */
+var coord = {
+  lat: Number,
+  lng: Number
+}
+var routeLine;
+var startMarker;
+var endMarker;
+var already_run = false;
+
+function switchMapType(map, platform){
+  var aerialMapTileService = platform.getMapTileService({
+    type: 'aerial'
+  });
+  terrainMap = aerialMapTileService.createTileLayer(
+    'maptile',
+    'terrain.day',
+    pixelRatio === 1 ? 256 : 512,
+    'png8',
+    {ppi: pixelRatio === 1 ? undefined : 320}
+  );
+  map.setBaseLayer(terrainMap);
+}
+
+function setUpClickListener(map) {
+  // Attach an event listener to map display
+  // obtain the coordinates and display in an alert box.
+  map.addEventListener('tap', function (evt) {
+    var temp = map.screenToGeo(evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+    coord = temp;
+    // Call calculateRoute() with the routing parameters,
+    // the callback and an error callback function (called if a
+    // communication error occurs):
+    routingParameters.waypoint0 = "geo!" + coord.lat +"," + coord.lng;
+    router.calculateRoute(routingParameters, onResult,
+    function(error) {
+    alert(error.message);
+    });
+  });
+}
+/**
+ * Boilerplate map initialization code starts below:
+ */
+
+//Step 1: initialize communication with the platform
+var platform = new H.service.Platform({
+  app_id: 'devportal-demo-20180625',
+  app_code: '9v2BkviRwi9Ot26kp2IysQ',
+  useHTTPS: true
+});
+var pixelRatio = window.devicePixelRatio || 1;
+var defaultLayers = platform.createDefaultLayers({
+  tileSize: pixelRatio === 1 ? 256 : 512,
+  ppi: pixelRatio === 1 ? undefined : 320
+});
+
+//Center the map around UC San Diego
+var map = new H.Map(document.getElementById('map'),
+  defaultLayers.satellite.traffic,{
+  center: {lat:32.877832, lng:-117.240637},
+  zoom: 15,
+  pixelRatio: pixelRatio
+});
+
+//Step 3: make the map interactive
+// MapEvents enables the event system
+// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+// Create the default UI components
+var ui = H.ui.UI.createDefault(map, defaultLayers);
+// Remove map settings as unnecessary
+ui.removeControl('mapsettings');
+
+// Now use the map as required...
+switchMapType(map, platform);
+
+// ROUTING ADDED
+
+// Create the parameters for the routing request:
+var routingParameters = {
+  // The routing mode:
+  'mode': 'fastest;car',
+  // The start point of the route:
+  'waypoint0': 'geo!32.8801,-117.2340',
+  // The end point of the route:
+  'waypoint1': 'geo!32.8851,-117.2350',
+  // To retrieve the shape of the route we choose the route
+  // representation mode 'display'
+  'representation': 'display'
+};
+
+// Define a callback function to process the routing response:
+var onResult = function(result) {
+  alert(coord)
+  var route,
+    routeShape,
+    startPoint,
+    endPoint,
+    linestring;
+  if(result.response.route) {
+  // Pick the first route from the response:
+  route = result.response.route[0];
+  // Pick the route's shape:
+  routeShape = route.shape;
+
+  // Create a linestring to use as a point source for the route line
+  linestring = new H.geo.LineString();
+
+  // Push all the points in the shape into the linestring:
+  routeShape.forEach(function(point) {
+    var parts = point.split(',');
+    linestring.pushLatLngAlt(parts[0], parts[1]);
+  });
+
+  //remove the previous route if called more than once
+  if(already_run === true){
+    map.removeObjects([routeLine, startMarker, endMarker]);
+  }
+
+  // Retrieve the mapped positions of the requested waypoints:
+  startPoint = route.waypoint[0].mappedPosition;
+  endPoint = route.waypoint[1].mappedPosition;
+  // Create a polyline to display the route:
+  routeLine = new H.map.Polyline(linestring, {
+    style: { strokeColor: 'blue', lineWidth: 10 }
+  });
+
+  // Create a marker for the start point:
+  startMarker = new H.map.Marker({
+    lat: startPoint.latitude,
+    lng: startPoint.longitude
+  });
+
+  // Create a marker for the end point:
+  endMarker = new H.map.Marker({
+    lat: endPoint.latitude,
+    lng: endPoint.longitude
+  });
+
+  // Add the route polyline and the two markers to the map:
+  map.addObjects([routeLine, startMarker, endMarker]);
+  already_run = true;
+  // Set the map's viewport to make the whole route visible:
+  map.setViewBounds(routeLine.getBounds());
+  }
+};
+
+// Get an instance of the routing service:
+var router = platform.getRoutingService();
+
+
+setUpClickListener(map);
+  </script>
+</body>
+</html>

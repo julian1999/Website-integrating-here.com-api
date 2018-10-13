@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <link rel="stylesheet" href="stylesheet.css">
 <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet"> 
@@ -10,20 +11,22 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
 <script type="text/javascript" src="dynamicNav.js"></script>
+<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
 <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
 <script src="semantic/dist/semantic.min.js"></script>
-
 </head>
-<body class="ui container">
+
+<body>
+
     <!-- create the top bar with the title of webpage -->
     <div class"buttonDiv">
 	    <ul>
   		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
-  		    <li><h1> <center>Quick Route To UCSD</center> </h1></li>
-            <p class="subtext">Click where you currently are to find quickest route to UCSD</p>
+  		    <li><h1> <center>Places Near Me</center> </h1></li>
+            <p class="subtext">Interact with the map to see neat things around you!</p>
 	    </ul>
     </div>
   
@@ -35,10 +38,9 @@
 		<a href="placesnearme.html">Places Near Me</a>
 		<a href="localtraffic.html">Local Traffic</a>
     </div>
-  <div id="map"/>
-  <script  type="text/javascript" charset="UTF-8">
-    
 
+  <div id="map">
+  <script  type="text/javascript" charset="UTF-8">
 /**
  * Switches the map type to a topographical map
  *
@@ -199,5 +201,7 @@ var router = platform.getRoutingService();
 
 setUpClickListener(map);
   </script>
+  </div>
 </body>
+
 </html>

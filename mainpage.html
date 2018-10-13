@@ -9,6 +9,7 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+<script type="text/javascript" src="dynamicNav.js"></script>
 <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
 <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -17,12 +18,30 @@
 <script src="semantic/dist/semantic.min.js"></script>
 
 </head>
-<body class="ui container">
-  <h1> UCSD Quick Route </h1>
-  <div id="map" style="width: 100%; height: 1000px; background: grey" />
-  <script  type="text/javascript" charset="UTF-8">
-    
 
+<body class="ui container">
+    <!-- create the top bar with the title of webpage -->
+    <div class"buttonDiv">
+	    <ul>
+  		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
+  		    <li><h1> <center>Home</center> </h1></li>
+            <p class="subtext">Welcome to our wepage for SD Hacks 2018.</p>
+            <p class="subtext">We used the Here.com Javascript API and integrated it into this website using
+            HTML, CSS, and Javascript.</p>
+	    </ul>
+    </div>
+  
+    <!-- set up the side bar -->
+    <div id="mySidebar" class="sidebar">
+		<a href="javascript:void(0)" class="closebutton" onclick="closeNav()">&times;</a>
+		<a href="mainpage.html">Home</a>
+		<a href="quickroute.html">Quick Route</a>
+		<a href="thingsaroundme.html">Things Around Me</a>
+		<a href="localtraffic.html">Local Traffic</a>
+    </div>
+  <div id="map">
+  <script type="text/javascript" charset="UTF-8">
+      
 /**
  * Switches the map type to a topographical map
  *
@@ -123,7 +142,7 @@ var onResult = function(result) {
 
   // Create a polyline to display the route:
   var routeLine = new H.map.Polyline(linestring, {
-    style: { strokeColor: 'blue', lineWidth: 10 }
+    style: { strokeColor: 'red', lineWidth: 3 }
   });
 
   // Create a marker for the start point:
@@ -157,5 +176,6 @@ router.calculateRoute(routingParameters, onResult,
     alert(error.message);
   });
   </script>
+  </div>
 </body>
 </html>

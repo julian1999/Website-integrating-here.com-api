@@ -26,7 +26,8 @@
 	    <ul>
   		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
   		    <li><h1> <center>Places Near Me</center> </h1></li>
-            <p class="subtext">Interact with the map to see neat things around you!</p>
+                <label id="seach">Search: </label>
+                <input type="text" placeholder="i.e. food">
 	    </ul>
     </div>
   
@@ -41,21 +42,13 @@
 
   <div id="map">
   <script  type="text/javascript" charset="UTF-8">
+      
 /**
  * Switches the map type to a topographical map
  *
  * @param  {H.Map} map      A HERE Map instance within the application
  * @param   {H.service.Platform} platform    A stub class to access HERE services
  */
-var coord = {
-  lat: Number,
-  lng: Number
-}
-var routeLine;
-var startMarker;
-var endMarker;
-var already_run = false;
-
 function switchMapType(map, platform){
   var aerialMapTileService = platform.getMapTileService({
     type: 'aerial'
@@ -70,23 +63,6 @@ function switchMapType(map, platform){
   map.setBaseLayer(terrainMap);
 }
 
-function setUpClickListener(map) {
-  // Attach an event listener to map display
-  // obtain the coordinates and display in an alert box.
-  map.addEventListener('tap', function (evt) {
-    var temp = map.screenToGeo(evt.currentPointer.viewportX,
-            evt.currentPointer.viewportY);
-    coord = temp;
-    // Call calculateRoute() with the routing parameters,
-    // the callback and an error callback function (called if a
-    // communication error occurs):
-    routingParameters.waypoint0 = "geo!" + coord.lat +"," + coord.lng;
-    router.calculateRoute(routingParameters, onResult,
-    function(error) {
-    alert(error.message);
-    });
-  });
-}
 /**
  * Boilerplate map initialization code starts below:
  */
@@ -121,85 +97,50 @@ var ui = H.ui.UI.createDefault(map, defaultLayers);
 // Remove map settings as unnecessary
 ui.removeControl('mapsettings');
 
+//ADDED SEARCH Here
+
+//create a group object to hold map markers
+var group = new H.map.Group();
+
+//Add the group object to the map
+map.addObject(group);
+
+//Obtain a search through which to submit search requests
+var search = new H.places.Search(platform.getPlacesService()),
+    searchResult, error;
+
+//define search parameters
+var params = {
+//plain text search for places with the word "hotel" associated with them:
+    'q': 'hotel',
+//search in La Jolla, CA near UCSD
+    'at': '32.8801, -117.2340'
+};
+
+//define a callback function to handle data on success
+function onResult(data){
+    addPlacesToMap(data.results);
+}
+
+//Define a callback function to handle errors
+function onError(data) {
+    error = data;
+}
+
+//Function adds markers to the map, indicating each of the located places
+function addPlacesToMap(result) {
+    group.addObjects(result.items.map(function (place) {
+        var marker = new H.map.Marker({lat: place.position[0],
+            lng: place.position[1]})
+        return marker;
+    }));
+}
+
+//Run a search request with the parameters, headers (empty), and callback funcs
+search.request(params, {}, onResult, onError);
 // Now use the map as required...
-switchMapType(map, platform);
+//switchMapType(map, platform);
 
-// ROUTING ADDED
-
-// Create the parameters for the routing request:
-var routingParameters = {
-  // The routing mode:
-  'mode': 'fastest;car',
-  // The start point of the route:
-  'waypoint0': 'geo!32.8801,-117.2340',
-  // The end point of the route:
-  'waypoint1': 'geo!32.8851,-117.2350',
-  // To retrieve the shape of the route we choose the route
-  // representation mode 'display'
-  'representation': 'display'
-};
-
-// Define a callback function to process the routing response:
-var onResult = function(result) {
-  alert(coord)
-  var route,
-    routeShape,
-    startPoint,
-    endPoint,
-    linestring;
-  if(result.response.route) {
-  // Pick the first route from the response:
-  route = result.response.route[0];
-  // Pick the route's shape:
-  routeShape = route.shape;
-
-  // Create a linestring to use as a point source for the route line
-  linestring = new H.geo.LineString();
-
-  // Push all the points in the shape into the linestring:
-  routeShape.forEach(function(point) {
-    var parts = point.split(',');
-    linestring.pushLatLngAlt(parts[0], parts[1]);
-  });
-
-  //remove the previous route if called more than once
-  if(already_run === true){
-    map.removeObjects([routeLine, startMarker, endMarker]);
-  }
-
-  // Retrieve the mapped positions of the requested waypoints:
-  startPoint = route.waypoint[0].mappedPosition;
-  endPoint = route.waypoint[1].mappedPosition;
-  // Create a polyline to display the route:
-  routeLine = new H.map.Polyline(linestring, {
-    style: { strokeColor: 'red', lineWidth: 3 }
-  });
-
-  // Create a marker for the start point:
-  startMarker = new H.map.Marker({
-    lat: startPoint.latitude,
-    lng: startPoint.longitude
-  });
-
-  // Create a marker for the end point:
-  endMarker = new H.map.Marker({
-    lat: endPoint.latitude,
-    lng: endPoint.longitude
-  });
-
-  // Add the route polyline and the two markers to the map:
-  map.addObjects([routeLine, startMarker, endMarker]);
-  already_run = true;
-  // Set the map's viewport to make the whole route visible:
-  map.setViewBounds(routeLine.getBounds());
-  }
-};
-
-// Get an instance of the routing service:
-var router = platform.getRoutingService();
-
-
-setUpClickListener(map);
   </script>
   </div>
 </body>

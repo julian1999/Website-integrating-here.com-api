@@ -9,6 +9,8 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+<script type="text/javascript" charset="UTF-8" src="http://js.api.here.com/v3/3.0/mapsjs-places.js"></script>
+
 <script type="text/javascript" src="dynamicNav.js"></script>
 <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -20,20 +22,20 @@
 <body class="ui container">
     <!-- create the top bar with the title of webpage -->
     <div class"buttonDiv">
-	    <ul>
-  		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
-  		    <li><h1> <center>Quick Route To UCSD</center> </h1></li>
+      <ul>
+          <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
+          <li><h1> <center>Quick Route To UCSD</center> </h1></li>
             <p class="subtext">Click where you currently are to find quickest route to UCSD</p>
-	    </ul>
+      </ul>
     </div>
   
     <!-- set up the side bar -->
     <div id="mySidebar" class="sidebar">
-		<a href="javascript:void(0)" class="closebutton" onclick="closeNav()">&times;</a>
-		<a href="mainpage.html">Home</a>
-		<a href="quickroute.html">Quick Route</a>
-		<a href="placesnearme.html">Places Near Me</a>
-		<a href="localtraffic.html">Local Traffic</a>
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNav()">&times;</a>
+    <a href="mainpage.html">Home</a>
+    <a href="quickroute.html">Quick Route</a>
+    <a href="placesnearme.html">Places Near Me</a>
+    <a href="localtraffic.html">Local Traffic</a>
     </div>
   <div id="map"/>
   <script  type="text/javascript" charset="UTF-8">
@@ -53,6 +55,7 @@ var routeLine;
 var startMarker;
 var endMarker;
 var already_run = false;
+var bubbleExist = false;
 
 function switchMapType(map, platform){
   var aerialMapTileService = platform.getMapTileService({
@@ -70,7 +73,6 @@ function switchMapType(map, platform){
 
 function setUpClickListener(map) {
   // Attach an event listener to map display
-  // obtain the coordinates and display in an alert box.
   map.addEventListener('tap', function (evt) {
     var temp = map.screenToGeo(evt.currentPointer.viewportX,
             evt.currentPointer.viewportY);
@@ -83,16 +85,19 @@ function setUpClickListener(map) {
     function(error) {
     alert(error.message);
     });
+    showAddr();
   });
 }
+
+
 /**
  * Boilerplate map initialization code starts below:
  */
 
 //Step 1: initialize communication with the platform
 var platform = new H.service.Platform({
-  app_id: 'devportal-demo-20180625',
-  app_code: '9v2BkviRwi9Ot26kp2IysQ',
+  app_id: 'JjnuWtBcsmqUcn57XFDX',
+  app_code: '3Oflgf350AlfeF00uzy4Eg',
   useHTTPS: true
 });
 var pixelRatio = window.devicePixelRatio || 1;
@@ -139,7 +144,6 @@ var routingParameters = {
 
 // Define a callback function to process the routing response:
 var onResult = function(result) {
-  alert(coord)
   var route,
     routeShape,
     startPoint,
@@ -198,6 +202,48 @@ var router = platform.getRoutingService();
 
 
 setUpClickListener(map);
+
+var bubble2;
+  //KIET'S CODE
+  // Testing reverse geocoding
+// Create the parameters for the reverse geocoding request:
+function showAddr(){
+  var reverseGeocodingParameters = {
+    prox: '' + coord.lat + ',' + coord.lng + ',100',
+    mode: 'retrieveAddresses',
+    maxresults: 1
+  };
+// prox: '' + coord.lat + ',' + coord.lng + ',200',
+  // Define a callback function to process the response:
+  function onSuccess(result) {
+    var location = result.Response.View[0].Result[0];
+    if(bubbleExist){
+      ui.removeBubble(bubble2);
+    }
+    
+    // Create an InfoBubble at the returned location with
+    // the address as its contents:
+    var bubble1 = new H.ui.InfoBubble({
+      lat: location.Location.DisplayPosition.Latitude,
+      lng: location.Location.DisplayPosition.Longitude
+     }, { content: location.Location.Address.Label });
+    ui.addBubble(bubble1);
+    bubble2 = bubble1;
+    bubbleExist = true;
+
+  };
+
+  // Get an instance of the geocoding service:
+  var geocoder = platform.getGeocodingService();
+
+  // Call the geocode method with the geocoding parameters,
+  // the callback and an error callback function (called if a
+  // communication error occurs):
+  geocoder.reverseGeocode(
+    reverseGeocodingParameters,
+    onSuccess,
+    function(e) { alert(e); });
+}
   </script>
 </body>
 </html>

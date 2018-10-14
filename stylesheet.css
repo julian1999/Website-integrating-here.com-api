@@ -23,6 +23,11 @@ ul{
 ul:hover{
     border-color: black;
 }
+img{
+    height: 100px;
+    width: 100px;
+    position: center;
+}
 .subtext{
     font-size: 120%;
     font-family: 'Shadows Into Light Two', cursive; 

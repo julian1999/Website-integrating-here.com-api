@@ -118,10 +118,14 @@ ui.removeControl('mapsettings');
       return marker;
       }));
     }
-
-    // Run a search request with parameters, headers (empty), and
-    // callback functions:
-   
+     
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
      
     function getUrlParam(parameter, defaultvalue){
         var urlparameter = defaultvalue;
@@ -132,10 +136,11 @@ ui.removeControl('mapsettings');
     }
 
     function setText(){
-        var textTemp = ;
-        params = {'q' : "hotel", 'at': '32.877832,-117.240637'}
+        var textTemp = getUrlParam('text', '');
+        params = {'q' : textTemp, 'at': '32.877832,-117.240637'}
         return params; 
     }
+
     search.request(setText(), {}, onResult, onError);
     
   </script>

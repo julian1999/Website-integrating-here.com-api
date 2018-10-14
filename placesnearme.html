@@ -18,6 +18,8 @@
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
 <script src="semantic/dist/semantic.min.js"></script>
+
+<script> src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 
 <body>
@@ -28,9 +30,9 @@
   		    <li id="open"><button class="openbutton" onclick="openNav()">&equiv;</button></li>
   		    <li><h1> <center>Places Near Me</center> </h1></li>
                 <form id="form1">
-                    <label id="seach">Search: </label>
-                    <input name="text" type="text" placeholder="i.e. food">
-                    <button onclick="getText()">Submit</button>
+                    <label id="search">Search: </label>
+                    <input id="text1" name="text" type="text" placeholder="i.e. food">
+                    <button>Submit</button>
                 </form>
 	    </ul>
     </div>
@@ -97,23 +99,6 @@ ui.removeControl('mapsettings');
     var search = new H.places.Search(platform.getPlacesService()),
       searchResult, error;
 
-    var text = ""; 
-   
-    function getText(){
-        text = document.getElementById("form1").elements[0].value;
-        console.log(text);
-    }
-     
-    console.log(text); 
-    // Define search parameters:
-    var params = {
-    // Plain text search for places with the word "hotel"
-    // associated with them:
-      'q': "hotel",
-    //  Search UC San Diego area
-      'at': '32.877832,-117.240637'
-    };
-
     // Define a callback function to handle data on success:
     function onResult(data) {
       addPlacesToMap(data.results);
@@ -136,7 +121,22 @@ ui.removeControl('mapsettings');
 
     // Run a search request with parameters, headers (empty), and
     // callback functions:
-    search.request(params, {}, onResult, onError);
+   
+     
+    function getUrlParam(parameter, defaultvalue){
+        var urlparameter = defaultvalue;
+        if(window.location.href.indexOf(parameter) > -1){
+            urlparameter = getUrlVars()[parameter];
+        }
+        return urlparameter;
+    }
+
+    function setText(){
+        var textTemp = ;
+        params = {'q' : "hotel", 'at': '32.877832,-117.240637'}
+        return params; 
+    }
+    search.request(setText(), {}, onResult, onError);
     
   </script>
   </div>
